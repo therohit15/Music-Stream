@@ -16,6 +16,14 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
   const { data: results, isLoading, error } = useQuery<Song[]>({
     queryKey: ['/api/search', query],
     enabled: query.length > 2,
+    onError: (error) => {
+      console.error('Search error:', error);
+      toast({
+        variant: "destructive",
+        title: "Search failed",
+        description: error instanceof Error ? error.message : "Failed to search songs"
+      });
+    }
   });
 
   return (
@@ -29,7 +37,7 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
       />
 
       {isLoading && (
-        <div className="text-center">
+        <div className="text-center text-muted-foreground">
           <span className="loading">Searching...</span>
         </div>
       )}

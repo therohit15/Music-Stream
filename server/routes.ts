@@ -10,11 +10,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!q || typeof q !== "string") {
         return res.status(400).json({ message: "Query parameter required" });
       }
+
+      if (q.length < 2) {
+        return res.status(400).json({ message: "Search query too short" });
+      }
+
+      console.log('Searching YouTube for:', q);
       const results = await searchYouTube(q);
+      console.log('Search results:', results.length);
       res.json(results);
     } catch (error) {
       console.error("Search error:", error);
-      res.status(500).json({ message: "Failed to search YouTube" });
+      const message = error instanceof Error ? error.message : "Failed to search YouTube";
+      res.status(500).json({ message });
     }
   });
 
