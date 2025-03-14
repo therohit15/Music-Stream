@@ -3,12 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import type { Song } from "./Player";
 
-export function SearchBar() {
+interface SearchBarProps {
+  onSongSelect?: (song: Song) => void;
+}
+
+export function SearchBar({ onSongSelect }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const { toast } = useToast();
 
-  const { data: results, isLoading } = useQuery({
+  const { data: results, isLoading } = useQuery<Song[]>({
     queryKey: ['/api/search', query],
     enabled: query.length > 2,
   });
@@ -22,21 +27,24 @@ export function SearchBar() {
         onChange={(e) => setQuery(e.target.value)}
         className="w-full text-lg"
       />
-      
+
       {isLoading && (
         <div className="text-center">
           <span className="loading">Searching...</span>
         </div>
       )}
 
-      {results && (
+      {results && results.length > 0 && (
         <Card className="p-4">
           <ul className="space-y-2">
-            {results.map((result: any) => (
+            {results.map((result) => (
               <li
                 key={result.id}
                 className="flex items-center gap-4 p-2 hover:bg-accent rounded-lg cursor-pointer"
                 onClick={() => {
+                  if (onSongSelect) {
+                    onSongSelect(result);
+                  }
                   toast({
                     title: "Added to playlist",
                     description: result.title

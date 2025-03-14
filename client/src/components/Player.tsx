@@ -1,9 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Controls } from "./Controls";
 import { Card } from "@/components/ui/card";
+import { YouTubePlayer } from "./YouTubePlayer";
 
-export function Player() {
-  const [currentSong, setCurrentSong] = useState<any>(null);
+export interface Song {
+  id: string;
+  title: string;
+  artist: string;
+  thumbnailUrl: string;
+}
+
+interface PlayerProps {
+  initialSong?: Song | null;
+}
+
+export function Player({ initialSong }: PlayerProps) {
+  const [currentSong, setCurrentSong] = useState<Song | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(50);
+  const [playlist, setPlaylist] = useState<Song[]>([]);
+
+  useEffect(() => {
+    if (initialSong) {
+      setCurrentSong(initialSong);
+      setIsPlaying(true);
+      if (!playlist.find(s => s.id === initialSong.id)) {
+        setPlaylist([...playlist, initialSong]);
+      }
+    }
+  }, [initialSong]);
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+  };
+
+  const handleSongSelect = (song: Song) => {
+    setCurrentSong(song);
+    setIsPlaying(true);
+    if (!playlist.find(s => s.id === song.id)) {
+      setPlaylist([...playlist, song]);
+    }
+  };
 
   return (
     <Card className="p-8 flex flex-col items-center gap-8">
@@ -28,7 +69,19 @@ export function Player() {
         </p>
       </div>
 
-      <Controls currentSong={currentSong} />
+      <Controls 
+        isPlaying={isPlaying}
+        onPlayPause={handlePlayPause}
+        volume={volume}
+        onVolumeChange={handleVolumeChange}
+        currentSong={currentSong}
+      />
+
+      <YouTubePlayer
+        videoId={currentSong?.id}
+        isPlaying={isPlaying}
+        volume={volume}
+      />
     </Card>
   );
 }

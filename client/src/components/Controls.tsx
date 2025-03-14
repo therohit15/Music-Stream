@@ -8,12 +8,19 @@ import {
 
 interface ControlsProps {
   currentSong: any;
+  isPlaying: boolean;
+  onPlayPause: () => void;
+  volume: number;
+  onVolumeChange: (volume: number) => void;
 }
 
-export function Controls({ currentSong }: ControlsProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(50);
-
+export function Controls({ 
+  currentSong, 
+  isPlaying, 
+  onPlayPause, 
+  volume, 
+  onVolumeChange 
+}: ControlsProps) {
   const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
 
   return (
@@ -33,7 +40,7 @@ export function Controls({ currentSong }: ControlsProps) {
           size="icon"
           className="h-12 w-12"
           disabled={!currentSong}
-          onClick={() => setIsPlaying(!isPlaying)}
+          onClick={onPlayPause}
         >
           {isPlaying ? (
             <Pause className="h-6 w-6" />
@@ -56,7 +63,7 @@ export function Controls({ currentSong }: ControlsProps) {
         <VolumeIcon className="h-4 w-4" />
         <Slider
           value={[volume]}
-          onValueChange={([v]) => setVolume(v)}
+          onValueChange={([v]) => onVolumeChange(v)}
           max={100}
           step={1}
         />
