@@ -13,11 +13,27 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const { toast } = useToast();
 
-  const { data: results, isLoading, error } = useQuery<Song[]>({
+  const { data: results, isLoading, error } = useQuery({
     queryKey: ['/api/search', query],
     enabled: query.length > 2,
-    retry: 1,
-    staleTime: 30000,
+    queryFn: async () => {
+      const searchUrl = `/api/search?q=${encodeURIComponent(query)}`;
+      console.log('Making search request to:', searchUrl);
+
+      const response = await fetch(searchUrl);
+      console.log('Search response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Search error response:', errorData);
+        throw new Error(errorData.message || 'Failed to search');
+      }
+
+      const data = await response.json();
+      console.log('Search results:', data);
+      return data;
+    },
+    retry: false,
     onError: (error) => {
       console.error('Search error:', error);
       toast({
@@ -46,7 +62,7 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
 
       {error && (
         <div className="text-center text-destructive">
-          Failed to search. Please try again.
+          {error instanceof Error ? error.message : 'Failed to search. Please try again.'}
         </div>
       )}
 
