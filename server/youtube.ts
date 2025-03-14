@@ -1,4 +1,3 @@
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || 'YOUR_API_KEY';
 const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3';
 
 export interface YouTubeSearchResult {
@@ -9,7 +8,10 @@ export interface YouTubeSearchResult {
 }
 
 export async function searchYouTube(query: string): Promise<YouTubeSearchResult[]> {
-  if (!process.env.YOUTUBE_API_KEY) {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  console.log('Checking YouTube API key:', apiKey ? 'Present' : 'Missing');
+
+  if (!apiKey) {
     throw new Error("YouTube API key is not configured");
   }
 
@@ -18,22 +20,30 @@ export async function searchYouTube(query: string): Promise<YouTubeSearchResult[
     maxResults: '10',
     q: query,
     type: 'video',
-    key: process.env.YOUTUBE_API_KEY,
+    key: apiKey,
   });
 
   try {
-    const response = await fetch(`${YOUTUBE_API_URL}/search?${params}`);
+    const url = `${YOUTUBE_API_URL}/search?${params}`;
+    console.log('Making request to YouTube API:', url.replace(apiKey, '[REDACTED]'));
+
+    const response = await fetch(url);
+    console.log('YouTube API response status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('YouTube API error:', errorText);
+      console.error('YouTube API error response:', errorText);
       throw new Error(`YouTube API error: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log('YouTube API response data structure:', 
+      Object.keys(data),
+      data.items ? `Found ${data.items.length} items` : 'No items found'
+    );
 
     if (!data.items || !Array.isArray(data.items)) {
-      console.error('Unexpected YouTube API response:', data);
+      console.error('Unexpected YouTube API response:', JSON.stringify(data, null, 2));
       throw new Error('Invalid YouTube API response format');
     }
 
@@ -45,6 +55,6 @@ export async function searchYouTube(query: string): Promise<YouTubeSearchResult[
     }));
   } catch (error) {
     console.error('YouTube search error:', error);
-    throw new Error('Failed to search YouTube');
+    throw error;
   }
 }

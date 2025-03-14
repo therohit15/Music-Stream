@@ -16,6 +16,8 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
   const { data: results, isLoading, error } = useQuery<Song[]>({
     queryKey: ['/api/search', query],
     enabled: query.length > 2,
+    retry: 1,
+    staleTime: 30000,
     onError: (error) => {
       console.error('Search error:', error);
       toast({
