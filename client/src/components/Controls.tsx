@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { 
@@ -12,6 +11,10 @@ interface ControlsProps {
   onPlayPause: () => void;
   volume: number;
   onVolumeChange: (volume: number) => void;
+  onNext: () => void;
+  onPrevious: () => void;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 export function Controls({ 
@@ -19,7 +22,11 @@ export function Controls({
   isPlaying, 
   onPlayPause, 
   volume, 
-  onVolumeChange 
+  onVolumeChange,
+  onNext,
+  onPrevious,
+  hasNext,
+  hasPrevious
 }: ControlsProps) {
   const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
 
@@ -29,8 +36,8 @@ export function Controls({
         <Button
           variant="ghost"
           size="icon"
-          disabled={!currentSong}
-          onClick={() => {}}
+          disabled={!hasPrevious}
+          onClick={onPrevious}
           className="text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80"
         >
           <SkipBack className="h-6 w-6" />
@@ -53,8 +60,8 @@ export function Controls({
         <Button
           variant="ghost"
           size="icon"
-          disabled={!currentSong}
-          onClick={() => {}}
+          disabled={!hasNext}
+          onClick={onNext}
           className="text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80"
         >
           <SkipForward className="h-6 w-6" />

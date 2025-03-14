@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Controls } from "./Controls";
 import { Card } from "@/components/ui/card";
 import { YouTubePlayer } from "./YouTubePlayer";
+import { PlaylistView } from "./PlaylistView";
 
 export interface Song {
   id: string;
@@ -19,6 +20,7 @@ export function Player({ initialSong }: PlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
   const [playlist, setPlaylist] = useState<Song[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   useEffect(() => {
     if (initialSong) {
@@ -26,6 +28,7 @@ export function Player({ initialSong }: PlayerProps) {
       setIsPlaying(true);
       if (!playlist.find(s => s.id === initialSong.id)) {
         setPlaylist([...playlist, initialSong]);
+        setCurrentIndex(playlist.length -1); // Set to the new song's position
       }
     }
   }, [initialSong]);
@@ -38,11 +41,30 @@ export function Player({ initialSong }: PlayerProps) {
     setVolume(newVolume);
   };
 
+  const handleNext = () => {
+    if (currentIndex < playlist.length - 1) {
+      const nextIndex = currentIndex + 1;
+      setCurrentIndex(nextIndex);
+      setCurrentSong(playlist[nextIndex]);
+      setIsPlaying(true);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      const prevIndex = currentIndex - 1;
+      setCurrentIndex(prevIndex);
+      setCurrentSong(playlist[prevIndex]);
+      setIsPlaying(true);
+    }
+  };
+
   const handleSongSelect = (song: Song) => {
-    setCurrentSong(song);
-    setIsPlaying(true);
-    if (!playlist.find(s => s.id === song.id)) {
-      setPlaylist([...playlist, song]);
+    const index = playlist.findIndex(s => s.id === song.id);
+    if (index !== -1) {
+      setCurrentIndex(index);
+      setCurrentSong(song);
+      setIsPlaying(true);
     }
   };
 
@@ -70,17 +92,26 @@ export function Player({ initialSong }: PlayerProps) {
       </div>
 
       <Controls 
+        currentSong={currentSong}
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
         volume={volume}
         onVolumeChange={handleVolumeChange}
-        currentSong={currentSong}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        hasNext={currentIndex < playlist.length - 1}
+        hasPrevious={currentIndex > 0}
       />
 
       <YouTubePlayer
         videoId={currentSong?.id}
         isPlaying={isPlaying}
         volume={volume}
+      />
+
+      <PlaylistView 
+        playlist={playlist}
+        onSongSelect={handleSongSelect}
       />
     </Card>
   );

@@ -24,24 +24,21 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
       console.log('Search response status:', response.status);
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ message: 'Network error' }));
         console.error('Search error response:', errorData);
         throw new Error(errorData.message || 'Failed to search');
       }
 
       const data = await response.json();
       console.log('Search results:', data);
+
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid search results format');
+      }
+
       return data;
     },
     retry: false,
-    onError: (error) => {
-      console.error('Search error:', error);
-      toast({
-        variant: "destructive",
-        title: "Search failed",
-        description: error instanceof Error ? error.message : "Failed to search songs"
-      });
-    }
   });
 
   return (
@@ -80,9 +77,7 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
                 key={result.id}
                 className="flex items-center gap-4 p-2 hover:bg-accent rounded-lg cursor-pointer"
                 onClick={() => {
-                  if (onSongSelect) {
-                    onSongSelect(result);
-                  }
+                  onSongSelect?.(result);
                   toast({
                     title: "Added to playlist",
                     description: result.title
