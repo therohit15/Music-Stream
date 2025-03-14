@@ -38,7 +38,7 @@ export function Controls({
           size="icon"
           disabled={!hasPrevious}
           onClick={onPrevious}
-          className="text-foreground hover:bg-accent disabled:text-muted-foreground"
+          className="text-foreground hover:bg-accent disabled:opacity-50"
         >
           <SkipBack className="h-6 w-6" />
         </Button>
@@ -46,7 +46,7 @@ export function Controls({
         <Button
           variant="default"
           size="icon"
-          className="h-12 w-12 bg-foreground text-background hover:bg-foreground/90"
+          className="h-12 w-12 bg-primary text-primary-foreground hover:bg-primary/90"
           disabled={!currentSong}
           onClick={onPlayPause}
         >
@@ -62,7 +62,7 @@ export function Controls({
           size="icon"
           disabled={!hasNext}
           onClick={onNext}
-          className="text-foreground hover:bg-accent disabled:text-muted-foreground"
+          className="text-foreground hover:bg-accent disabled:opacity-50"
         >
           <SkipForward className="h-6 w-6" />
         </Button>
@@ -75,7 +75,7 @@ export function Controls({
           onValueChange={([v]) => onVolumeChange(v)}
           max={100}
           step={1}
-          className="[&>span]:bg-foreground"
+          className="[&>span]:bg-primary"
         />
       </div>
     </div>
