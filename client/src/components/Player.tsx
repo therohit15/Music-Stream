@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Controls } from "./Controls";
 import { Card } from "@/components/ui/card";
 import { YouTubePlayer } from "./YouTubePlayer";
-import { PlaylistView } from "./PlaylistView";
 
 export interface Song {
   id: string;
@@ -59,15 +58,6 @@ export function Player({ initialSong }: PlayerProps) {
     }
   };
 
-  const handleSongSelect = (song: Song) => {
-    const index = playlist.findIndex(s => s.id === song.id);
-    if (index !== -1) {
-      setCurrentIndex(index);
-      setCurrentSong(song);
-      setIsPlaying(true);
-    }
-  };
-
   return (
     <Card className="p-8 flex flex-col items-center gap-8">
       <div className="w-48 h-48 rounded-full bg-muted flex items-center justify-center overflow-hidden">
@@ -107,11 +97,6 @@ export function Player({ initialSong }: PlayerProps) {
         videoId={currentSong?.id}
         isPlaying={isPlaying}
         volume={volume}
-      />
-
-      <PlaylistView 
-        playlist={playlist}
-        onSongSelect={handleSongSelect}
       />
 
       <a 
