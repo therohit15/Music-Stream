@@ -13,7 +13,7 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const { toast } = useToast();
 
-  const { data: results, isLoading } = useQuery<Song[]>({
+  const { data: results, isLoading, error } = useQuery<Song[]>({
     queryKey: ['/api/search', query],
     enabled: query.length > 2,
   });
@@ -31,6 +31,18 @@ export function SearchBar({ onSongSelect }: SearchBarProps) {
       {isLoading && (
         <div className="text-center">
           <span className="loading">Searching...</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center text-destructive">
+          Failed to search. Please try again.
+        </div>
+      )}
+
+      {query.length > 0 && !isLoading && results?.length === 0 && (
+        <div className="text-center text-muted-foreground">
+          No songs found matching "{query}"
         </div>
       )}
 
