@@ -38,7 +38,7 @@ export function Controls({
           size="icon"
           disabled={!hasPrevious}
           onClick={onPrevious}
-          className="text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80"
+          className="text-foreground hover:bg-accent disabled:text-muted-foreground"
         >
           <SkipBack className="h-6 w-6" />
         </Button>
@@ -46,7 +46,7 @@ export function Controls({
         <Button
           variant="default"
           size="icon"
-          className="h-12 w-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="h-12 w-12 bg-foreground text-background hover:bg-foreground/90"
           disabled={!currentSong}
           onClick={onPlayPause}
         >
@@ -62,20 +62,20 @@ export function Controls({
           size="icon"
           disabled={!hasNext}
           onClick={onNext}
-          className="text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80"
+          className="text-foreground hover:bg-accent disabled:text-muted-foreground"
         >
           <SkipForward className="h-6 w-6" />
         </Button>
       </div>
 
       <div className="flex items-center gap-2">
-        <VolumeIcon className="h-4 w-4 text-primary dark:text-primary" />
+        <VolumeIcon className="h-4 w-4 text-foreground" />
         <Slider
           value={[volume]}
           onValueChange={([v]) => onVolumeChange(v)}
           max={100}
           step={1}
-          className="[&>span]:bg-primary [&>span]:dark:bg-primary"
+          className="[&>span]:bg-foreground"
         />
       </div>
     </div>

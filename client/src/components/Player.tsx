@@ -28,7 +28,7 @@ export function Player({ initialSong }: PlayerProps) {
       setIsPlaying(true);
       if (!playlist.find(s => s.id === initialSong.id)) {
         setPlaylist([...playlist, initialSong]);
-        setCurrentIndex(playlist.length -1); // Set to the new song's position
+        setCurrentIndex(playlist.length); // Set to the new song's position
       }
     }
   }, [initialSong]);
@@ -113,6 +113,15 @@ export function Player({ initialSong }: PlayerProps) {
         playlist={playlist}
         onSongSelect={handleSongSelect}
       />
+
+      <a 
+        href="https://rohit-portfolio1.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        Created by therohit
+      </a>
     </Card>
   );
 }
