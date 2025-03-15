@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Controls } from "./Controls";
 import { Card } from "@/components/ui/card";
 import { YouTubePlayer } from "./YouTubePlayer";
+import { PlaylistView } from "./PlaylistView";
 
 export interface Song {
   id: string;
@@ -12,25 +13,29 @@ export interface Song {
 
 interface PlayerProps {
   initialSong?: Song | null;
+  playlist: Song[];
+  setPlaylist: React.Dispatch<React.SetStateAction<Song[]>>;
 }
 
-export function Player({ initialSong }: PlayerProps) {
+export function Player({ initialSong, playlist, setPlaylist }: PlayerProps) {
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
-  const [playlist, setPlaylist] = useState<Song[]>([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
   useEffect(() => {
     if (initialSong) {
       setCurrentSong(initialSong);
       setIsPlaying(true);
-      if (!playlist.find(s => s.id === initialSong.id)) {
-        setPlaylist([...playlist, initialSong]);
-        setCurrentIndex(playlist.length); // Set to the new song's position
-      }
+      setPlaylist((prev) => {
+        if (!prev.some((s) => s.id === initialSong.id)) {
+          return [...prev, initialSong];
+        }
+        return prev;
+      });
+      setCurrentIndex(playlist.length);
     }
-  }, [initialSong]);
+  }, [initialSong, setPlaylist]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -59,7 +64,7 @@ export function Player({ initialSong }: PlayerProps) {
   };
 
   return (
-    <Card className="p-8 flex flex-col items-center gap-8">
+    <Card className="p-8 flex flex-col items-center gap-8 bg-gray-100 dark:bg-gray-800 text-black dark:text-white transition-colors rounded-xl">
       <div className="w-48 h-48 rounded-full bg-muted flex items-center justify-center overflow-hidden">
         {currentSong ? (
           <img
@@ -68,7 +73,9 @@ export function Player({ initialSong }: PlayerProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="text-4xl text-muted-foreground">♪</div>
+          <div className="w-48 h-48 text-4xl text-muted-foreground rounded-full border border-black dark:border-white flex items-center justify-center">
+            ♪
+          </div>
         )}
       </div>
 
@@ -81,7 +88,7 @@ export function Player({ initialSong }: PlayerProps) {
         </p>
       </div>
 
-      <Controls 
+      <Controls
         currentSong={currentSong}
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
@@ -98,15 +105,6 @@ export function Player({ initialSong }: PlayerProps) {
         isPlaying={isPlaying}
         volume={volume}
       />
-
-      <a 
-        href="https://rohit-portfolio1.vercel.app/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        Created by therohit
-      </a>
     </Card>
   );
 }

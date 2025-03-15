@@ -23,17 +23,19 @@ export function ThemeProvider({
   children,
   defaultTheme = "light",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem("theme") as Theme) ||defaultTheme);
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(theme);
+    localStorage.setItem("theme", theme); 
   }, [theme]);
 
   const value = {
     theme,
     setTheme: (theme: Theme) => {
+      localStorage.setItem("theme", theme);
       setTheme(theme);
     },
   };

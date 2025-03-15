@@ -20,7 +20,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
           <Navbar />
           <main>
             <Router />

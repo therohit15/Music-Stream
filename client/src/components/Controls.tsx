@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { 
-  Play, Pause, SkipBack, SkipForward,
-  Volume2, Volume1, VolumeX
+import {
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  Volume1,
+  VolumeX,
 } from "lucide-react";
 
 interface ControlsProps {
@@ -17,21 +22,21 @@ interface ControlsProps {
   hasPrevious: boolean;
 }
 
-export function Controls({ 
-  currentSong, 
-  isPlaying, 
-  onPlayPause, 
-  volume, 
+export function Controls({
+  currentSong,
+  isPlaying,
+  onPlayPause,
+  volume,
   onVolumeChange,
   onNext,
   onPrevious,
   hasNext,
-  hasPrevious
+  hasPrevious,
 }: ControlsProps) {
   const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
 
   return (
-    <div className="w-full max-w-sm space-y-4">
+    <div className="w-full max-w-sm space-y-4 bg-background text-foreground transition-colors">
       <div className="flex items-center justify-center gap-4">
         <Button
           variant="ghost"
@@ -46,7 +51,8 @@ export function Controls({
         <Button
           variant="default"
           size="icon"
-          className="h-12 w-12 bg-primary text-primary-foreground hover:bg-primary/90"
+          className="h-12 w-12 bg-black text-white rounded-full
+          dark:bg-white dark:text-black hover:bg-black/90 dark:hover:bg-white/90"
           disabled={!currentSong}
           onClick={onPlayPause}
         >
@@ -75,7 +81,7 @@ export function Controls({
           onValueChange={([v]) => onVolumeChange(v)}
           max={100}
           step={1}
-          className="[&>span]:bg-primary"
+          className="[&>span]:bg-black dark:[&>span]:bg-white"
         />
       </div>
     </div>

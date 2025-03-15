@@ -9,7 +9,7 @@ interface PlaylistViewProps {
 
 export function PlaylistView({ playlist = [], onSongSelect }: PlaylistViewProps) {
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-gray-100 dark:bg-gray-800  text-black dark:text-white transition-colors rounded-xl">
       <h2 className="text-xl font-bold mb-4">Up Next</h2>
       <ScrollArea className="h-48">
         <div className="space-y-2">
