@@ -1,6 +1,5 @@
 
 {
-  "variant": "default",
   "type": "light",
   "primary": "hsl(0 0% 0%)",
   "appearance": "system",
