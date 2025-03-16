@@ -4,7 +4,9 @@ import { Type } from "@sinclair/typebox";
 export const ThemeSchema = Type.Object({
   variant: Type.Union([
     Type.Literal("default"),
-    Type.Literal("destructive")
+    Type.Literal("secondary"),
+    Type.Literal("destructive"),
+    Type.Literal("outline")
   ]),
   type: Type.Union([
     Type.Literal("light"),
